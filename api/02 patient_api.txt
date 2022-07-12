@@ -1,0 +1,408 @@
+
+///////////////////////////
+/// PATIENT
+
+/// CREATE
+# url: /api/register/patient
+# method: POST
+# middleware: guest, admin
+# description: add new patient
+# data:
+{
+    "name": "Ali",
+    "username": "12345674",
+    "gender": "male",
+    "password": "password112",
+    "birthdate": "1350-8-17"
+}
+# validation:
+{
+    'name' => 'required|min:3|max:200',
+    'username' => 'required|numeric|unique:users',
+    'password' => 'required|min:4|max:12',
+    'gender' => 'in['male', 'female']',
+    'birthdate' => 'required|regex:/^\d{4}-\d{1,2}-\d{1,2}$/i'
+}
+# response:
+- validation error HTTP code: 422
+    {
+        "message": "The username has already been taken. (and 1 more error)",
+        "errors": {
+            "username": [
+                "The username has already been taken."
+            ],
+            "password": [
+                "The password must be at least 4 characters."
+            ]
+        }
+    }
++ patient created HTTP code: 201
+    {
+        "name": "Ali",
+        "username": "1234547649",
+        "gender": "male",
+        "role": "patient",
+        "id": 5,
+        "patient": {
+            "birthdate": "1350-8-17"
+        }
+    }
+
+-------------------------------------
+
+/// UPDATE
+# url: /api/patient/update
+# method: POST
+# middleware: authenticated, role:admin,patient
+# description: update patient data
+# data:
+{
+    "id": 1,
+    "name": "Ali",
+    "username": "12345674",
+    "gender": "male",
+    "password": "password",
+    "birthdate": "1350-8-17"
+}
+# validation:
+{
+    'id'  => 'required|numeric|in:users'
+    'name' => 'required|min:3|max:200',
+    'username' => 'required|numeric|unique:users',
+    'password' => 'required|min:4|max:12',
+    'gender' => 'in['male', 'female']',
+    'birthdate' => 'required|regex:/^\d{4}-\d{1,2}-\d{1,2}$/i'
+}
+# response:
+- validation error HTTP code: 422
+    {
+        "message": "The username has already been taken. (and 1 more error)",
+        "errors": {
+            "username": [
+                "The username has already been taken."
+            ],
+            "password": [
+                "The password must be at least 4 characters."
+            ]
+        }
+    }
++ patient updated HTTP code: 200
+    {
+        "id": 1,
+        "username": "12345674",
+        "role": "patient",
+        "name": "Mohammad",
+        "gender": "male",
+        "patient": {
+            "birthdate": "1373-8-17"
+        }
+    }
+
+-------------------------------------
+
+/// GET ALL PATIENTS
+# url: /api/patient/patients
+# method: GET
+# middleware: authenticated, role:admin
+# description: get all patients data
+# url_1: /patient/patients
+  get all patients
+  [
+      {
+          "id": 1,
+          "username": 12345674,
+          "role": "patient",
+          "name": "Mohammad",
+          "gender": "male",
+          "patient": {
+              "birthdate": "1373-8-17"
+          }
+      },
+      {
+          "id": 2,
+          "username": 12345664,
+          "role": "patient",
+          "name": "samadq",
+          "gender": "female",
+          "patient": {
+              "birthdate": "1373-8-17"
+          }
+      },
+      {
+          "id": 3,
+          "username": 123456649,
+          "role": "patient",
+          "name": "alireza",
+          "gender": "female",
+          "patient": {
+              "birthdate": "1350-8-17"
+          }
+      },
+      {
+          "id": 4,
+          "username": 123457649,
+          "role": "patient",
+          "name": "sara",
+          "gender": "female",
+          "patient": {
+              "birthdate": "1350-8-17"
+          }
+      },
+      {
+          "id": 5,
+          "username": 1234547649,
+          "role": "patient",
+          "name": "sara",
+          "gender": "female",
+          "patient": {
+              "birthdate": "1350-8-17"
+          }
+      }
+  ]
+
+# url_2: /patient/patients?per_page=2
+  2 patient per page
+  {
+      "current_page": 1,
+      "data": [
+          {
+              "id": 1,
+              "username": 12345674,
+              "role": "patient",
+              "name": "Mohammad",
+              "gender": "male",
+              "patient": {
+                  "birthdate": "1373-8-17"
+              }
+          },
+          {
+              "id": 2,
+              "username": 12345664,
+              "role": "patient",
+              "name": "samadq",
+              "gender": "female",
+              "patient": {
+                  "birthdate": "1373-8-17"
+              }
+          }
+      ],
+      "first_page_url": "http://project.local/api/patients?per_page=2&page=1",
+      "from": 1,
+      "last_page": 3,
+      "last_page_url": "http://project.local/api/patients?per_page=2&page=3",
+      "links": [
+          {
+              "url": null,
+              "label": "&laquo; Previous",
+              "active": false
+          },
+          {
+              "url": "http://project.local/api/patients?per_page=2&page=1",
+              "label": "1",
+              "active": true
+          },
+          {
+              "url": "http://project.local/api/patients?per_page=2&page=2",
+              "label": "2",
+              "active": false
+          },
+          {
+              "url": "http://project.local/api/patients?per_page=2&page=3",
+              "label": "3",
+              "active": false
+          },
+          {
+              "url": "http://project.local/api/patients?per_page=2&page=2",
+              "label": "Next &raquo;",
+              "active": false
+          }
+      ],
+      "next_page_url": "http://project.local/api/patients?per_page=2&page=2",
+      "path": "http://project.local/api/patients",
+      "per_page": 2,
+      "prev_page_url": null,
+      "to": 2,
+      "total": 5
+  }
+
+
+-------------------------------------
+
+/// GET PATIENT DATA
+# url: /api/patient/{id}
+# method: GET
+# middleware: authenticated, role: admin,doctor
+# description: get patient data by id
+/patient/patient/1
+{
+    "id": 1,
+    "username": 12345674,
+    "role": "patient",
+    "name": "Mohammad",
+    "gender": "male",
+    "patient": {
+        "birthdate": "1373-8-17"
+    }
+}
+
+-------------------------------------
+
+/// GET CURRENT PATIENT DATA
+# url: /api/patient
+# method: GET
+# middleware: authenticated, role: patient
+# description: get current patient data
+/patient/patient
+{
+    "id": 1,
+    "username": 12345674,
+    "role": "patient",
+    "name": "Mohammad",
+    "gender": "male",
+    "patient": {
+        "birthdate": "1373-8-17"
+    }
+}
+
+-------------------------------------
+
+/// GET PATIENTS COUNT
+# url: /api/patients/count
+# method: GET
+# middleware: authenticated, role: admin
+# description: get patients count
+{
+    count: 147
+}
+
+-------------------------------------
+
+// GET PATIENT RESERVATIONS
+# url: /api/patient/reservations?visited=yes // visited
+# url: /api/patient/reservations?visited=no  // not visited yet
+# method: GET
+# middleware: authenticated, role: patient
+# description: get patient reservations history
+
+# response:
+[
+    [
+        {
+            "id": 6,
+            "patient_id": 1,
+            "date": "1400-1-12",
+            "visited": 0,
+            "doctor": {
+                "id": 2,
+                "username": 12324035,
+                "role": "doctor",
+                "name": "Sara",
+                "gender": "female",
+                "speciality": {
+                    "id": 1,
+                    "name": "متخصص چشم"
+                }
+            }
+        }
+    ],
+    {
+        "id": 4,
+        "patient_id": 1,
+        "date": "1400-1-12",
+        "visited": 1,
+        "doctor": {
+            "id": 2,
+            "username": 12324035,
+            "role": "patient",
+            "name": "Ali",
+            "gender": "male",
+            "speciality": {
+                "id": 1,
+                "name": "متخصص قلب"
+            }
+        }
+    },
+    {
+        "id": 5,
+        "patient_id": 1,
+        "date": "1400-1-12",
+        "visited": 1,
+        "doctor": {
+            "id": 2,
+            "username": 12324035,
+            "role": "patient",
+            "name": "Samira",
+            "gender": "female",
+            "speciality": {
+                "id": 1,
+                "name": "متخصص مغز"
+            }
+        }
+    }
+]
+
+-------------------------------------
+
+// GET PATIENT VISIT LIST WITH PRESCRIPTIONS ID
+# url: /api/patient/visits
+# method: GET
+# middleware: authenticated, role: patient
+# description: get patient reservations history
+
+# response:
+[
+    {
+        "prescription_id": 14,
+        "date": "1401-3-7",
+        "doctor": {
+            "id": 2,
+            "name": "Ali",
+            "gender": "male",
+            "speciality": "متخصص چشم"
+        }
+    },
+    {
+        "prescription_id": 15,
+        "date": "1401-3-15",
+        "doctor": {
+            "id": 2,
+            "name": "Sara",
+            "gender": "female",
+            "speciality": "متخصص قلب"
+        }
+    },
+]
+
+-------------------------------------
+
+// GET PATIENT PRESCRIPTION MEDICINE LIST
+# url: /api/patient/prescription/medicines?id=19
+# method: GET
+# middleware: authenticated, role: patient
+# description: get patient prescriptions medicines
+# response
+[
+    {
+        "id": 1,
+        "name": "medicine 1",
+        "price": 12000
+    },
+    {
+        "id": 2,
+        "name": "medicine 2",
+        "price": 19000
+    }
+]
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
