@@ -20,12 +20,14 @@ class SigninView extends GetResponsiveView<SigninController> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           MTextField(
-            hintText: LocaleKeys.text_field_user_name.tr,
+            initialValue: controller.userName,
+            labelText: LocaleKeys.text_field_user_name.tr,
             onSaved: (s) => controller.userName = s!,
           ),
           kSpaceVertical16,
           MTextField(
-            hintText: LocaleKeys.text_field_password.tr,
+            initialValue: controller.password,
+            labelText: LocaleKeys.text_field_password.tr,
             onSaved: (s) => controller.password = s!,
           ),
           kSpaceVertical16,

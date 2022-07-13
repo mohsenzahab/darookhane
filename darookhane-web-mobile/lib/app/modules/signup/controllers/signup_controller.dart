@@ -27,7 +27,8 @@ class SignupController extends GetxController {
           userName: userName,
           gender: gender,
           name: fullName,
-          // password: password,
+          phoneNumber: phoneNumber,
+          password: password,
           birthDate: Jalali.now());
 
       final result = await API.api.register(patient);

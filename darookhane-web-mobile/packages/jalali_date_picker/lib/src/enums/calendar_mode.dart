@@ -1,0 +1,4 @@
+enum CalendarMode {
+  gregorian,
+  jalali,
+}

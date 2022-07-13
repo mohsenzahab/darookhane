@@ -1,6 +1,8 @@
 import 'package:darookhane/app/core/themes/colors.dart';
 import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/patient.dart';
+import 'package:darookhane/app/data/models/person.dart';
+import 'package:darookhane/app/data/provider/locale_db.dart';
 import 'package:darookhane/generated/locales.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,9 +12,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app/routes/app_pages.dart';
 
-void main() {
-  String? initialRoute = Routes.SIGNUP;
-  initHive();
+void main() async {
+  await initHive();
+  bool userSignedIn = (await DB.db.getLoggedInUserToken()) != null;
+  String? initialRoute = userSignedIn ? Routes.HOME : Routes.SIGNUP;
   runApp(
     GetMaterialApp(
       title: "Darookane",
@@ -51,8 +54,9 @@ void main() {
   );
 }
 
-void initHive() {
-  Hive.initFlutter();
-  Hive.registerAdapter(PatientAdapter());
-  Hive.registerAdapter(GenderAdapter());
+Future<void> initHive() async {
+  await Hive.initFlutter();
+  // Hive.registerAdapter(PatientAdapter());
+  // Hive.registerAdapter(PersonAdapter());
+  // Hive.registerAdapter(GenderAdapter());
 }

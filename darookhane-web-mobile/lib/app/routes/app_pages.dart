@@ -4,6 +4,10 @@ import '../modules/doctors_list/bindings/doctors_list_binding.dart';
 import '../modules/doctors_list/views/doctors_list_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
+import '../modules/reservations/bindings/reservations_binding.dart';
+import '../modules/reservations/views/reservations_view.dart';
 import '../modules/signin/bindings/signin_binding.dart';
 import '../modules/signin/views/signin_view.dart';
 import '../modules/signup/bindings/signup_binding.dart';
@@ -36,6 +40,16 @@ class AppPages {
       name: _Paths.DOCTORS_LIST,
       page: () => const DoctorsListView(),
       binding: DoctorsListBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.RESERVATIONS,
+      page: () => const ReservationsView(),
+      binding: ReservationsBinding(),
     ),
   ];
 }

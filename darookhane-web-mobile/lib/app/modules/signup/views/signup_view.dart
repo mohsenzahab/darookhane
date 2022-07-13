@@ -21,23 +21,23 @@ class SignupView extends GetResponsiveView<SignupController> {
         children: [
           MTextField(
             inputType: TextInputType.number,
-            hintText: LocaleKeys.text_field_user_name.tr,
+            labelText: LocaleKeys.text_field_user_name.tr,
             onSaved: (s) => controller.userName = s!,
           ),
           kSpaceVertical16,
           MTextField(
-            hintText: LocaleKeys.text_field_full_name.tr,
+            labelText: LocaleKeys.text_field_full_name.tr,
             onSaved: (s) => controller.fullName = s!,
           ),
           kSpaceVertical16,
           MTextField(
-            hintText: LocaleKeys.text_field_phon_number.tr,
+            labelText: LocaleKeys.text_field_phon_number.tr,
             onSaved: (s) => controller.phoneNumber = s!,
             inputType: TextInputType.phone,
           ),
           kSpaceVertical16,
           MTextField(
-            hintText: LocaleKeys.text_field_password.tr,
+            labelText: LocaleKeys.text_field_password.tr,
             onSaved: (s) => controller.password = s!,
           ),
           kSpaceVertical16,
@@ -104,7 +104,7 @@ class SignupView extends GetResponsiveView<SignupController> {
           scrollDirection: Axis.horizontal, child: widget);
     }
     return Scaffold(
-      body: widget,
+      body: SafeArea(child: widget),
     );
   }
 }

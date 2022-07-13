@@ -1,6 +1,6 @@
+import 'package:darookhane/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
 
 class MAvatar extends StatelessWidget {
   const MAvatar({Key? key}) : super(key: key);
@@ -10,10 +10,13 @@ class MAvatar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20.0), //or 15.0
       child: Container(
-        height: 70.0,
-        width: 70.0,
+        height: 90.0,
+        width: 90.0,
         color: Color.fromARGB(255, 136, 216, 211),
-        child: Icon(Icons.person, color: Colors.white, size: 50.0),
+        child: IconButton(
+          icon: Image.asset('assets/icons/avatar.png'),
+          onPressed: Get.find<HomeController>().toProfilePage,
+        ),
       ),
     );
   }

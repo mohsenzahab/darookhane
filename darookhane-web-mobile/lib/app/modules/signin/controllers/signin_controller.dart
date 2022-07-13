@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/patient.dart';
 import 'package:darookhane/app/data/provider/api.dart';
@@ -10,36 +12,33 @@ import 'package:shamsi_date/shamsi_date.dart';
 class SigninController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  late String userName;
-  late String password;
+  late String userName = '292123456';
+  late String password = '123456';
 
   bool signingIn = false;
 
   void signIn() async {
     debugPrint('sign in pressd');
     {}
-    DB.db.setPatientData(Patient(
-        name: 'test',
-        gender: Gender.male,
-        userName: '1231',
-        birthDate: Jalali.now(),
-        id: 12));
-    debugPrint('data saved');
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       updateSignInBtn(true);
       final result = await API.api.login(userName, password);
-      updateSignInBtn(false);
 
       if (result.isOk) {
         DB.db.setPatientToken(result.token);
 
-        API.api
-            .getPatientData(result.token)
-            .then((data) => DB.db.setPatientData(data));
+        Patient patient = await API.api.getPatientData(result.token);
+        patient.password = password;
+        DB.db.setPatientData(patient);
+        patient = (await DB.db.patientData)!;
+        log('patient data: ${(patient).toJson()}');
+        updateSignInBtn(false);
 
         Get.offAndToNamed(Routes.HOME);
       } else {
+        updateSignInBtn(false);
+
         Get.showSnackbar(GetSnackBar(
           title: 'Sing Up error:${result.reason}',
           message: result.message,

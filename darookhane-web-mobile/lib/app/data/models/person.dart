@@ -13,7 +13,6 @@ class Person {
     required this.userName,
     required this.name,
     required this.gender,
-    // required this.password
   });
 
   @HiveField(0)
@@ -24,24 +23,19 @@ class Person {
   String name;
   @HiveField(3)
   Gender gender;
-  // @HiveField(4)
-  // String password;
 
   Map<String, dynamic> toMap() => {
         if (id != null) F_ID: id,
         F_NAME: name,
         F_USERNAME: userName,
         F_GENDER: gender.name,
-        // F_PASSWORD: password,
       };
 
   Person.fromMap(Map<String, dynamic> map)
       : id = map[F_ID],
         userName = map[F_USERNAME].toString(),
         name = map[F_NAME],
-        gender = Gender.nameToGender(map[F_GENDER])
-  // password = map[F_PASSWORD]
-  ;
+        gender = Gender.nameToGender(map[F_GENDER]);
 
   String toJson() {
     return jsonEncode(toMap());

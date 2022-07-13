@@ -296,6 +296,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  jalali_date_picker:
+    dependency: "direct main"
+    description:
+      path: "packages/jalali_date_picker"
+      relative: true
+    source: path
+    version: "0.0.1"
   js:
     dependency: transitive
     description:

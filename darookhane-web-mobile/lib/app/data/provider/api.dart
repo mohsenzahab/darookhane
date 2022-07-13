@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:darookhane/app/data/enums/gender.dart';
+import 'package:darookhane/app/data/models/specialty.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -46,7 +48,7 @@ class API {
     return ApiResponse(response);
   }
 
-  Future<bool> updatePatient(String token, Patient patient) async {
+  Future<ApiResponse> updatePatient(String token, Patient patient) async {
     final url = Uri.parse('$_urlPrefix/api/patient/update');
     final headers = {
       "Content-type": "application/json",
@@ -55,10 +57,10 @@ class API {
     };
 
     final response =
-        await post(url, headers: headers, body: patient.toMap().toString());
+        await post(url, headers: headers, body: jsonEncode(patient.toMap()));
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');
-    return ApiResponse(response).isCreated;
+    return ApiResponse(response);
   }
 
 // login user and return the token
@@ -103,6 +105,7 @@ class API {
     };
     Response response = await get(url, headers: headers);
     final maps = jsonDecode(response.body);
+    debugPrint(response.body);
     List<Reservation> reservations = [];
     for (Map<String, dynamic> map in maps) {
       reservations.add(Reservation.fromMap(map));
@@ -153,7 +156,8 @@ class API {
     return medicines;
   }
 
-  Future<List<Doctor>> getDoctorsList(String token) async {
+  Future<Map<Specialty, List<Doctor>>> getDoctorsPerSpecialty(
+      String token) async {
     final url = Uri.parse('$_urlPrefix/api/doctors');
     final headers = {
       "Content-type": "application/json",
@@ -161,9 +165,33 @@ class API {
       HttpHeaders.authorizationHeader: "$_authMethodBearer $token"
     };
     Response response = await get(url, headers: headers);
-    List<Doctor> doctors = [];
+    Map<Specialty, List<Doctor>> doctors = {};
     for (Map<String, dynamic> map in jsonDecode(response.body)) {
-      doctors.add(Doctor.fromMap(map));
+      final Specialty specialty = Specialty.fromMap(map);
+      doctors[specialty] = [];
+      log(map['doctors'].toString());
+      for (Map<String, dynamic> map in map['doctors'].first) {
+        doctors[specialty]!.add(Doctor.fromMapSpecialty(map, specialty));
+      }
+    }
+    debugPrint('Status code: ${response.statusCode}');
+    debugPrint('Headers: ${response.headers}');
+    debugPrint('Body: ${response.body}');
+    return doctors;
+  }
+
+  Future<List<Specialty>> getSpecialties(String token) async {
+    final url = Uri.parse('$_urlPrefix/api/specialities');
+    final headers = {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      HttpHeaders.authorizationHeader: "$_authMethodBearer $token"
+    };
+    Response response = await get(url, headers: headers);
+    List<Specialty> doctors = [];
+    log(response.body);
+    for (Map<String, dynamic> map in jsonDecode(response.body)) {
+      doctors.add(Specialty.fromMap(map));
     }
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Headers: ${response.headers}');
@@ -180,8 +208,8 @@ class API {
       HttpHeaders.authorizationHeader: "$_authMethodBearer $token"
     };
 
-    final response =
-        await post(url, headers: headers, body: reservation.toMap().toString());
+    final response = await post(url,
+        headers: headers, body: jsonEncode(reservation.toMap()));
     reservation.id = jsonDecode(response.body)[F_RESERVATION_ID];
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');

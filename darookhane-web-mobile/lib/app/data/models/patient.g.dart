@@ -16,19 +16,26 @@ class PatientAdapter extends TypeAdapter<Patient> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+    log('hive reading: reading values=> ${fields.toString()}');
+
     return Patient(
       id: fields[0] as int?,
       userName: fields[1] as String,
       gender: fields[3] as Gender,
       name: fields[2] as String,
-      // password: fields[4] as String,
-      birthDate: DateHelper.parse(fields[5]),
+      password: '',
+      phoneNumber: '',
+      birthDate: DateHelper.parse(fields[4]),
     );
   }
 
   @override
   void write(BinaryWriter writer, Patient obj) {
+    log('hive write: writing values=> ${obj.toJson()}');
     writer
+      // ..writeByte(5)
+      ..writeByte(4)
+      ..write(obj.birthDate.toString())
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -36,11 +43,7 @@ class PatientAdapter extends TypeAdapter<Patient> {
       ..writeByte(2)
       ..write(obj.name)
       ..writeByte(3)
-      ..write(obj.gender)
-      // ..writeByte(4)
-      // ..write(obj.password)
-      ..writeByte(5)
-      ..write(obj.birthDate.toData);
+      ..write(obj.gender);
   }
 
   @override

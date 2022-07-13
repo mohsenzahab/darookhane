@@ -21,25 +21,21 @@ class PersonAdapter extends TypeAdapter<Person> {
       userName: fields[1] as String,
       name: fields[2] as String,
       gender: fields[3] as Gender,
-      // password: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Person obj) {
     writer
-          ..writeByte(5)
-          ..writeByte(0)
-          ..write(obj.id)
-          ..writeByte(1)
-          ..write(obj.userName)
-          ..writeByte(2)
-          ..write(obj.name)
-          ..writeByte(3)
-          ..write(obj.gender)
-          ..writeByte(4)
-        // ..write(obj.password)
-        ;
+      // ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.userName)
+      ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.gender);
   }
 
   @override
