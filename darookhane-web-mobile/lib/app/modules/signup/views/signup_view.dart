@@ -1,5 +1,7 @@
 import 'package:darookhane/app/core/themes/decoration.dart';
 import 'package:darookhane/app/core/values/screen_values.dart';
+import 'package:darookhane/app/data/enums/gender.dart';
+import 'package:darookhane/app/widgets/gender_selector.dart';
 import 'package:darookhane/app/widgets/text_field.dart';
 import 'package:darookhane/generated/locales.g.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ class SignupView extends GetResponsiveView<SignupController> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           MTextField(
+            inputType: TextInputType.number,
             hintText: LocaleKeys.text_field_user_name.tr,
             onSaved: (s) => controller.userName = s!,
           ),
@@ -30,7 +33,7 @@ class SignupView extends GetResponsiveView<SignupController> {
           MTextField(
             hintText: LocaleKeys.text_field_phon_number.tr,
             onSaved: (s) => controller.phoneNumber = s!,
-            isPhonNumber: true,
+            inputType: TextInputType.phone,
           ),
           kSpaceVertical16,
           MTextField(
@@ -38,6 +41,8 @@ class SignupView extends GetResponsiveView<SignupController> {
             onSaved: (s) => controller.password = s!,
           ),
           kSpaceVertical16,
+          GenderSelectorForm(
+              onChanged: ((newGender) => controller.gender = newGender!)),
           kSpaceVertical32,
           ElevatedButton(
               onPressed: controller.onSubmitButtonPressed,
@@ -45,7 +50,16 @@ class SignupView extends GetResponsiveView<SignupController> {
                   shape: MaterialStateProperty.all<OutlinedBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)))),
-              child: Text(LocaleKeys.button_register.tr)),
+              child: GetBuilder<SignupController>(
+                id: 'signup',
+                builder: (c) {
+                  return c.signingUp
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : Text(LocaleKeys.button_register.tr);
+                },
+              )),
           TextButton(
               onPressed: controller.toSignInView,
               child: Text('از قبل ثبت نام کرده اید؟')),
@@ -74,21 +88,20 @@ class SignupView extends GetResponsiveView<SignupController> {
         ),
       );
     }
-    widget = Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(LocaleKeys.text_title_register_user.tr),
-        widget,
-      ],
+    widget = SingleChildScrollView(
+      padding: EdgeInsets.only(top: 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(LocaleKeys.text_title_register_user.tr),
+          widget,
+        ],
+      ),
     );
     if (screen.isDesktop || screen.isTablet) {
       widget = SingleChildScrollView(
-        child: Center(
-          child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: widget),
-        ),
-      );
+          scrollDirection: Axis.horizontal, child: widget);
     }
     return Scaffold(
       body: widget,

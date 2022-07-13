@@ -118,6 +118,7 @@ class HomeView extends GetResponsiveView<HomeController> {
     // }
     return Scaffold(
       body: SafeArea(
+        minimum: EdgeInsets.only(top: 50),
         child: widget,
       ),
     );

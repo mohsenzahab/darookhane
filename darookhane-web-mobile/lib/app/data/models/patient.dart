@@ -14,10 +14,9 @@ class Patient extends Person {
       required super.userName,
       required super.gender,
       required super.name,
-      required super.password,
       required this.birthDate});
 
-  // @HiveField(5)
+  @HiveField(5)
   Jalali birthDate;
 
   @override

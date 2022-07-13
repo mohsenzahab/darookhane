@@ -1,34 +1,38 @@
 import 'package:darookhane/app/data/models/patient.dart';
 import 'package:hive/hive.dart';
 
-class LocalDB {
-  LocalDB._();
+class DB {
+  DB._();
 
-  static late final LocalDB? _instance;
+  static DB? _instance;
 
-  LocalDB get instance {
-    _instance ??= LocalDB._();
+  static DB get db {
+    _instance ??= DB._();
     return _instance!;
   }
 
-  static const String _box_preferences = 'preferences';
-  static const String _box_user_data = 'user_data';
+  static const String _boxPreferences = 'preferences';
+  static const String _boxUserData = 'user_data';
 
-  static const String _key_token = 'token';
-  static const String _key_patient = 'patient';
+  static const String _keyToken = 'token';
+  static const String _keyPatient = 'patient';
 
   Future<String?> getLoggedInUserToken() async {
-    final box = await Hive.openBox(_box_preferences);
-    return box.get(_key_token);
+    final box = await Hive.openBox(_boxPreferences);
+    return box.get(_keyToken);
   }
 
   Future<Patient?> get patientData async {
-    final box = await Hive.openBox<Patient>(_box_user_data);
-    return box.get(_key_patient);
+    final box = await Hive.openBox<Patient>(_boxUserData);
+    return box.get(_keyPatient);
   }
 
-  void setPatientData(Patient patientData, String token) {
-    Hive.openBox<Patient>(_box_user_data).then((box) => box.add(patientData));
-    Hive.openBox(_box_preferences).then((box) => box.put(_key_token, token));
+  void setPatientData(Patient patientData) {
+    Hive.openBox<Patient>(_boxUserData)
+        .then((box) => box.put(_keyPatient, patientData));
+  }
+
+  void setPatientToken(String token) {
+    Hive.openBox(_boxPreferences).then((box) => box.put(_keyToken, token));
   }
 }

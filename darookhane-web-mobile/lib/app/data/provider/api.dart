@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:darookhane/app/data/enums/gender.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shamsi_date/shamsi_date.dart';
+
 import 'package:darookhane/app/core/utils/date_helper.dart';
 import 'package:darookhane/app/data/models/doctor.dart';
 import 'package:darookhane/app/data/models/medicine.dart';
@@ -8,35 +13,29 @@ import 'package:darookhane/app/data/models/patient.dart';
 import 'package:darookhane/app/data/models/prescription.dart';
 import 'package:darookhane/app/data/models/reservation.dart';
 import 'package:darookhane/app/data/provider/fields.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 
 class API {
   API._();
 
   static API? _instance;
 
-  static API get instance {
+  static API get api {
     _instance ??= API._();
     return _instance!;
   }
 
-  static const String result = "result";
-  static const String message = "message";
-  static const int _success = 201;
   final String _urlPrefix = 'https://mastouremast.ir';
   final String _authMethodBearer = 'Bearer';
 
 // Adds the given patient to db.
-  Future<Map<String, dynamic>> register(Patient patient) async {
+  Future<ApiResponse> register(Patient patient) async {
     final url = Uri.parse('$_urlPrefix/api/register/patient');
     final headers = {
       "Content-type": "application/json",
       "Accept": "application/json"
     };
     final Response response =
-        await post(url, headers: headers, body: patient.toMap().toString())
+        await post(url, headers: headers, body: patient.toJson())
             .then((response) {
       final map = jsonDecode(response.body);
       patient.id = map[F_ID];
@@ -44,7 +43,7 @@ class API {
     });
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');
-    return {result: response.statusCode == _success, message: response.body};
+    return ApiResponse(response);
   }
 
   Future<bool> updatePatient(String token, Patient patient) async {
@@ -59,21 +58,22 @@ class API {
         await post(url, headers: headers, body: patient.toMap().toString());
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');
-    return response.statusCode == _success;
+    return ApiResponse(response).isCreated;
   }
 
 // login user and return the token
-  Future<String> login(String userName, String password) async {
+  Future<ApiResponse> login(String userName, String password) async {
     final url = Uri.parse('$_urlPrefix/api/login');
     final headers = {
-      "Content-type": "application/json",
+      // "Content-type": "application/json"
       "Accept": "application/json"
     };
     final json = {F_USERNAME: userName, F_PASSWORD: password};
     final response = await post(url, headers: headers, body: json);
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');
-    return jsonDecode(response.body)[F_TOKEN];
+
+    return ApiResponse(response);
   }
 
   Future<Patient> getPatientData(String token) async {
@@ -171,7 +171,8 @@ class API {
     return doctors;
   }
 
-  Future<bool> createReservation(String token, Reservation reservation) async {
+  Future<ApiResponse> createReservation(
+      String token, Reservation reservation) async {
     final url = Uri.parse('$_urlPrefix/api/reserve');
     final headers = {
       "Content-type": "application/json",
@@ -184,6 +185,37 @@ class API {
     reservation.id = jsonDecode(response.body)[F_RESERVATION_ID];
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Body: ${response.body}');
-    return response.statusCode == _success;
+    return ApiResponse(response);
   }
+}
+
+class ApiResponse {
+  ApiResponse(Response response)
+      : _body = jsonDecode(response.body),
+        _statusCode = response.statusCode,
+        _reason = response.reasonPhrase;
+
+  static const int _ok = 200;
+  static const int _created = 201;
+  static const int _failed = 401;
+
+  final int _statusCode;
+  final String? _reason;
+  // map or list
+  final dynamic _body;
+
+  Map<String, dynamic> get getMap => _body as Map<String, dynamic>;
+  List<Map<String, dynamic>> get getList => _body as List<Map<String, dynamic>>;
+
+  bool get isCreated => _statusCode == _created;
+  bool get isFailed => _statusCode == _failed;
+  bool get isOk => _statusCode == _ok;
+
+  int get reserveId => _body[F_RESERVATION_ID];
+  String get token => _body[F_TOKEN];
+  int get id => _body[F_ID];
+  String? get message => _body[F_MESSAGE];
+  String get reason => _reason ?? "Empty";
+  String get name => _body[F_NAME];
+  String get userName => _body[F_USERNAME];
 }

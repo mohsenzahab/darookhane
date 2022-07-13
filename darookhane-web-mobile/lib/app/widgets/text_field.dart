@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 
 class MTextField extends StatelessWidget {
   const MTextField(
-      {Key? key, this.hintText, this.onSaved, this.isPhonNumber = false})
+      {Key? key,
+      this.hintText,
+      this.onSaved,
+      this.inputType = TextInputType.text})
       : super(key: key);
 
   final String? hintText;
   final void Function(String? s)? onSaved;
-  final bool isPhonNumber;
+  final TextInputType inputType;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       style: kStyleInputText,
       onSaved: onSaved,
       validator: (str) {
@@ -20,12 +24,12 @@ class MTextField extends StatelessWidget {
         return null;
       },
       textInputAction: TextInputAction.next,
-      keyboardType: isPhonNumber ? TextInputType.phone : TextInputType.text,
+      keyboardType: inputType,
       onEditingComplete: () => FocusScope.of(context).nextFocus(),
       decoration: const InputDecoration()
           .applyDefaults(Theme.of(context).inputDecorationTheme)
           .copyWith(
-            hintText: hintText,
+            labelText: hintText,
           ),
     );
   }

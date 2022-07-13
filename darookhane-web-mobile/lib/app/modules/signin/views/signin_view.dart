@@ -32,7 +32,16 @@ class SigninView extends GetResponsiveView<SigninController> {
           kSpaceVertical32,
           ElevatedButton(
               onPressed: controller.signIn,
-              child: Text(LocaleKeys.button_login.tr)),
+              child: GetBuilder<SigninController>(
+                id: 'signin',
+                builder: (c) {
+                  return c.signingIn
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : Text(LocaleKeys.button_login.tr);
+                },
+              )),
           TextButton(
               onPressed: controller.signUpView, child: Text('حساب ندارید؟'))
         ],
@@ -60,24 +69,23 @@ class SigninView extends GetResponsiveView<SigninController> {
         ),
       );
     }
-    widget = Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(LocaleKeys.text_title_user_login.tr),
-        widget,
-      ],
+    widget = SingleChildScrollView(
+      padding: const EdgeInsets.only(top: 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(LocaleKeys.text_title_user_login.tr),
+          widget,
+        ],
+      ),
     );
     if (screen.isDesktop || screen.isTablet) {
       widget = SingleChildScrollView(
-        child: Center(
-          child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: widget),
-        ),
-      );
+          scrollDirection: Axis.horizontal, child: widget);
     }
     return Scaffold(
-      body: widget,
+      body: SafeArea(child: widget),
     );
   }
 }

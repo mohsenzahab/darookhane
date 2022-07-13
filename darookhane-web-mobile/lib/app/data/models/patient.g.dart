@@ -21,16 +21,14 @@ class PatientAdapter extends TypeAdapter<Patient> {
       userName: fields[1] as String,
       gender: fields[3] as Gender,
       name: fields[2] as String,
-      password: fields[4] as String,
-      birthDate: fields[5] as Jalali,
+      // password: fields[4] as String,
+      birthDate: DateHelper.parse(fields[5]),
     );
   }
 
   @override
   void write(BinaryWriter writer, Patient obj) {
     writer
-      ..writeByte(5)
-      ..write(obj.birthDate)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -39,8 +37,10 @@ class PatientAdapter extends TypeAdapter<Patient> {
       ..write(obj.name)
       ..writeByte(3)
       ..write(obj.gender)
-      ..writeByte(4)
-      ..write(obj.password);
+      // ..writeByte(4)
+      // ..write(obj.password)
+      ..writeByte(5)
+      ..write(obj.birthDate.toData);
   }
 
   @override

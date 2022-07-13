@@ -5,5 +5,7 @@
         "darookhane",
         "Signin",
         "SIGNUP"
-    ]
+    ],
+    "editor.fontLigatures": true,
+    "editor.fontSize": 18
 }

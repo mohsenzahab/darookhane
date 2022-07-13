@@ -7,7 +7,7 @@ class Doctor extends Person {
       required super.userName,
       required super.name,
       required super.gender,
-      required super.password,
+      // required super.password,
       required this.specialty});
 
   String specialty;

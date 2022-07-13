@@ -1,4 +1,5 @@
 import 'package:darookhane/app/core/themes/colors.dart';
+import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/patient.dart';
 import 'package:darookhane/generated/locales.g.dart';
 import 'package:flutter/material.dart';
@@ -53,4 +54,5 @@ void main() {
 void initHive() {
   Hive.initFlutter();
   Hive.registerAdapter(PatientAdapter());
+  Hive.registerAdapter(GenderAdapter());
 }

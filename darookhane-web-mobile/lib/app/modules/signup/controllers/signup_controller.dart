@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/patient.dart';
 import 'package:darookhane/app/data/provider/api.dart';
@@ -7,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class SignupController extends GetxController {
-  final GlobalKey<FormFieldState> formKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late String fullName;
   late String userName;
@@ -15,47 +17,43 @@ class SignupController extends GetxController {
   late String phoneNumber;
   late Gender gender;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
+  bool signingUp = false;
 
   void onSubmitButtonPressed() async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+      updateSignUpButton(true);
       Patient patient = Patient(
           userName: userName,
           gender: gender,
           name: fullName,
-          password: password,
+          // password: password,
           birthDate: Jalali.now());
 
-      final result = await API.instance.register(patient);
-      if (result[API.result]) {
-        Get.snackbar('Signup', 'Signup successful');
+      final result = await API.api.register(patient);
+      debugPrint(patient.toJson());
+      updateSignUpButton(false);
+      if (result.isOk) {
+        Get.snackbar('Sing Up', 'Sign Up successful',
+            duration: const Duration(seconds: 5));
+        // DB.db.setPatientData(patient);
+        Get.offAndToNamed(Routes.SIGNIN);
       } else {
         Get.showSnackbar(GetSnackBar(
-          title: 'Singup',
-          message: result[API.message],
+          title: 'Sing Up error:${result.reason}',
+          message: result.message,
+          duration: const Duration(seconds: 5),
         ));
       }
     }
-    Get.back();
-    Get.toNamed(Routes.SIGNIN);
+  }
+
+  void updateSignUpButton(bool signingUp) {
+    this.signingUp = signingUp;
+    update(['signup']);
   }
 
   void toSignInView() {
-    Get.back();
-    Get.toNamed(Routes.SIGNIN);
+    Get.offAndToNamed(Routes.SIGNIN);
   }
 }

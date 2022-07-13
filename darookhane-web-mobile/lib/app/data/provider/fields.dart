@@ -5,6 +5,7 @@ const F_PRESCRIPTION_ID = 'prescription_id';
 const F_RESERVATION_ID = 'prescription_id';
 const F_DATE = 'date';
 const F_NAME = 'name';
+const F_MESSAGE = 'message';
 const F_USERNAME = 'username';
 const F_GENDER = 'gender';
 const F_PASSWORD = 'password';
