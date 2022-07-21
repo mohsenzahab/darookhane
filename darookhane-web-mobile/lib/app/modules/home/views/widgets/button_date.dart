@@ -46,7 +46,10 @@ class _ButtonDateState extends State<ButtonDate> {
               c.selectedDate != null
                   ? DateHelper.format(context, c.selectedDate)
                   : 'انتخاب تاریخ',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ));

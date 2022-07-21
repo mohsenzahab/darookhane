@@ -31,3 +31,8 @@ flutter:
 
   assets:
     - assets/icons/
+  
+  fonts:
+    - family: Kalameh
+      fonts:
+        - asset: assets/fonts/kalameh/KALAMEH-REGULAR.TTF

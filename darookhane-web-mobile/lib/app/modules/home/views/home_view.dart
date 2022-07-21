@@ -1,3 +1,5 @@
+import 'package:darookhane/app/core/themes/colors.dart';
+import 'package:darookhane/app/core/themes/decoration.dart';
 import 'package:darookhane/app/core/values/screen_values.dart';
 import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/doctor.dart';
@@ -21,72 +23,110 @@ class HomeView extends GetResponsiveView<HomeController> {
 
   @override
   Widget builder() {
-    Widget widget = SingleChildScrollView(
-      child: Center(
-        child: FractionallySizedBox(
-          widthFactor: .9,
-          child: Column(
-            children: [
-              if (screen.isPhone)
-                GetBuilder<HomeController>(
-                    id: '1',
-                    builder: (c) {
-                      return Column(
-                        children: [
-                          HomeBarPhone(
-                            showAvatar: !c.showDoctors,
-                            backPressed: () => c.showDoctors = false,
-                          ),
-                          kSpaceVertical32,
-                          if (c.showDoctors)
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                  maxWidth: kFormMaxWidth,
-                                  minWidth: kFormMinWidth),
-                              child: CupertinoSearchTextField(
-                                  placeholder: LocaleKeys
-                                      .text_field_search_doctor_name.tr),
-                            ),
-                        ],
-                      );
-                    })
-              else
-                const HomeBarDesktop(),
-              kSpaceHorizontal16,
+    Widget widget = Center(
+      child: FractionallySizedBox(
+        widthFactor: .9,
+        child: Column(
+          children: [
+            if (true)
               GetBuilder<HomeController>(
                   id: '1',
                   builder: (c) {
-                    if (screen.isPhone && c.showDoctors) {
+                    return Column(
+                      children: [
+                        HomeBarPhone(
+                          showAvatar: !c.showDoctors,
+                          backPressed: () => c.showDoctors = false,
+                        ),
+                        kSpaceVertical32,
+                        if (c.showDoctors)
+                          CupertinoSearchTextField(
+                              backgroundColor: kColorSearchBackground,
+                              placeholderStyle: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: kColorSearchPlaceHolder),
+                              placeholder:
+                                  LocaleKeys.text_field_search_doctor_name.tr,
+                              onChanged: (str) {
+                                c.searchDoctor(str);
+                              }),
+                      ],
+                    );
+                  })
+            else
+              const HomeBarDesktop(),
+            kSpaceHorizontal16,
+            Expanded(
+              child: GetBuilder<HomeController>(
+                  id: '1',
+                  builder: (c) {
+                    if (true && c.showDoctors) {
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           const ButtonDate(),
                           kSpaceHorizontal16,
-                          FormContainer(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  LocaleKeys.text_title_doctors_list.tr,
-                                  textAlign: TextAlign.center,
-                                ),
-                                kSpaceHorizontal16,
-                                FutureBuilder<Map<Specialty, List<Doctor>>>(
-                                    future: controller.specialties,
-                                    builder: ((context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return ListView(
-                                          shrinkWrap: true,
-                                          children: snapshot
-                                              .data![c.selectedSpecialty]!
-                                              .map((e) => CardDoctor(doctor: e))
-                                              .toList(growable: false),
-                                        );
-                                      } else {
-                                        return const CircularProgressIndicator();
-                                      }
-                                    }))
-                              ],
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.only(top: 20),
+                              decoration: kDecorationForm,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    LocaleKeys.text_title_doctors_list.tr,
+                                    style: TextStyle(
+                                        fontSize: 27,
+                                        fontWeight: FontWeight.w600,
+                                        color: Theme.of(Get.context!)
+                                            .primaryColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  kSpaceHorizontal16,
+                                  Flexible(
+                                    child: FutureBuilder<
+                                            Map<Specialty, List<Doctor>>>(
+                                        future: controller.specialties,
+                                        builder: ((context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            List<Doctor> doctors = c
+                                                        .selectedSpecialty ==
+                                                    null
+                                                ? snapshot.data!.values
+                                                    .fold<List<Doctor>>(
+                                                        [],
+                                                        (previousValue,
+                                                                element) =>
+                                                            previousValue
+                                                              ..addAll(element))
+                                                : snapshot.data![
+                                                    c.selectedSpecialty]!;
+
+                                            if (c.searchedDoctorName != null) {
+                                              doctors = doctors
+                                                  .where((d) => d.name.contains(
+                                                      c.searchedDoctorName!))
+                                                  .toList(growable: false);
+                                            }
+
+                                            return ListView(
+                                              padding: const EdgeInsets.all(15),
+                                              // primary: true,
+                                              // shrinkWrap: true,
+                                              children: doctors
+                                                  .map((e) =>
+                                                      CardDoctor(doctor: e))
+                                                  .toList(growable: false),
+                                            );
+                                          } else {
+                                            return const CircularProgressIndicator();
+                                          }
+                                        })),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -97,7 +137,12 @@ class HomeView extends GetResponsiveView<HomeController> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(LocaleKeys.text_title_scheduling_system.tr,
-                                  textAlign: TextAlign.center),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 27,
+                                      color:
+                                          Theme.of(Get.context!).primaryColor)),
                               kSpaceVertical32,
                               // MDropDownButton(
                               //   hint:
@@ -115,6 +160,7 @@ class HomeView extends GetResponsiveView<HomeController> {
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           return MDropDownButton(
+                                            fillColor: kColorFill,
                                             value: c.selectedSpecialty,
                                             hint: LocaleKeys
                                                 .button_drop_down_select_specialty
@@ -129,7 +175,7 @@ class HomeView extends GetResponsiveView<HomeController> {
                                       });
                                 },
                               ),
-                              if (screen.isPhone) ...[
+                              if (true) ...[
                                 kSpaceHorizontal32,
                                 ElevatedButton(
                                     onPressed: c.searchDoctors,
@@ -145,9 +191,9 @@ class HomeView extends GetResponsiveView<HomeController> {
                             ]),
                       );
                     }
-                  })
-            ],
-          ),
+                  }),
+            )
+          ],
         ),
       ),
     );
@@ -159,17 +205,31 @@ class HomeView extends GetResponsiveView<HomeController> {
     // }
     return Scaffold(
       drawer: Drawer(
-          child: ListView(
-              // padding: const EdgeInsets.symmetric(vertical: 50),
-              children: [
-                MAvatar(),
-                ListTile(
-                  title: Text('مشاهده رزروها'),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(kBorderRadiusVal),
+                topLeft: Radius.circular(kBorderRadiusVal))),
+        child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+            children: [
+              const MAvatar(),
+              ListTileTheme(
+                shape:
+                    RoundedRectangleBorder(borderRadius: kBorderRadiusCircular),
+                child: ListTile(
+                  tileColor: kColorDoctorCard,
+                  title: const Text(
+                    'مشاهده رزروها',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   onTap: controller.toReservations,
-                )
-              ]),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                ),
+              )
+            ]),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.only(top: 50),
         child: widget,
@@ -193,7 +253,7 @@ class HomeBarDesktop extends StatelessWidget {
             const MAvatar(),
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: const Text('نام کامل کاربر'),
+              child: Text('نام کامل کاربر'),
             )
           ],
         ),
@@ -232,7 +292,8 @@ class HomeBarPhone extends StatelessWidget {
         else
           Directionality(
             textDirection: TextDirection.ltr,
-            child: BackButton(
+            child: IconButton(
+              icon: Image.asset('assets/icons/back.png'),
               onPressed: backPressed,
             ),
           ),

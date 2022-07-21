@@ -67,20 +67,22 @@ class ProfileController extends GetxController {
             actionsOverflowAlignment: OverflowBarAlignment.center,
             actionsAlignment: MainAxisAlignment.center,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    DB.db.clearLoginSession();
-                    Get.offAllNamed(Routes.SIGNIN);
-                  },
-                  child: Text('خروج از حساب')),
-              OutlinedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: Text('لغو'))
-            ],
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            content: Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      DB.db.clearLoginSession();
+                      Get.offAllNamed(Routes.SIGNIN);
+                    },
+                    child: Text('خروج از حساب')),
+                OutlinedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: Text('لغو'))
+              ],
+            ),
           );
         });
   }

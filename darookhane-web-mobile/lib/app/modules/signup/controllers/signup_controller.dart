@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:darookhane/app/data/enums/gender.dart';
 import 'package:darookhane/app/data/models/patient.dart';
 import 'package:darookhane/app/data/provider/api.dart';
@@ -34,7 +32,7 @@ class SignupController extends GetxController {
       final result = await API.api.register(patient);
       debugPrint(patient.toJson());
       updateSignUpButton(false);
-      if (result.isOk) {
+      if (result.isCreated) {
         Get.snackbar('Sing Up', 'Sign Up successful',
             duration: const Duration(seconds: 5));
         // DB.db.setPatientData(patient);
@@ -42,7 +40,7 @@ class SignupController extends GetxController {
       } else {
         Get.showSnackbar(GetSnackBar(
           title: 'Sing Up error:${result.reason}',
-          message: result.message,
+          message: result.message ?? 'error',
           duration: const Duration(seconds: 5),
         ));
       }

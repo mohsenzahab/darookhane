@@ -94,7 +94,10 @@ class SignupView extends GetResponsiveView<SignupController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(LocaleKeys.text_title_register_user.tr),
+          Text(
+            LocaleKeys.text_title_register_user.tr,
+            style: Theme.of(Get.context!).textTheme.titleLarge,
+          ),
           widget,
         ],
       ),

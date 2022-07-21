@@ -13,6 +13,8 @@ class GenderSelectorForm extends StatelessWidget {
     return DropdownButtonFormField<Gender>(
         value: value,
         autovalidateMode: AutovalidateMode.onUserInteraction,
+        decoration: InputDecoration()
+            .applyDefaults(Theme.of(context).inputDecorationTheme),
         items: [
           DropdownMenuItem(
             child: Text('مرد'),

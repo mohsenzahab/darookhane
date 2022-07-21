@@ -16,6 +16,14 @@ class HomeController extends GetxController {
   Future<Map<Specialty, List<Doctor>>>? specialties;
   Specialty? selectedSpecialty;
   DateTime selectedDate = DateTime.now();
+  String? searchedDoctorName;
+
+  void searchDoctor(String? name) {
+    searchedDoctorName = name?.trim();
+    if ((searchedDoctorName?.length ?? 0) > 0) {
+      update(['1']);
+    }
+  }
 
   void toProfilePage() {
     Get.toNamed(Routes.PROFILE);
@@ -38,7 +46,6 @@ class HomeController extends GetxController {
   bool get showDoctors => _showDoctors;
 
   void searchDoctors() {
-    if (selectedSpecialty == null) return;
     showDoctors = true;
   }
 

@@ -9,10 +9,9 @@ class MAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20.0), //or 15.0
-      child: Container(
-        height: 90.0,
-        width: 90.0,
-        color: Color.fromARGB(255, 136, 216, 211),
+      child: SizedBox(
+        height: 80.0,
+        width: 80.0,
         child: IconButton(
           icon: Image.asset('assets/icons/avatar.png'),
           onPressed: Get.find<HomeController>().toProfilePage,

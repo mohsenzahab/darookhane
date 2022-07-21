@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-const double kBorderRadius = 12;
+const double kBorderRadiusVal = 15;
 
 const double kFormMinWidth = 400;
 const double kFormMaxWidth = 700;
